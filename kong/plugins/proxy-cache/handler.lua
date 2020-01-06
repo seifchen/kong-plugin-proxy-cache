@@ -241,10 +241,12 @@ local function send_response(res)
   ngx.header["Age"] = floor(time() - res.timestamp)
   ngx.header["X-Cache-Status"] = "Hit"
 
-  ngx.ctx.delayed_response = true
-  ngx.ctx.delayed_response_callback = function()
-    ngx.say(res.body)
-  end
+  local header = ngx.header
+  ngx.ctx.delayed_response = {
+   status_code = 200,
+   content_type=header,
+   content = res.body,
+  }
 end
 
 
